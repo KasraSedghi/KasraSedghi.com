@@ -954,6 +954,13 @@ body {
     transition: transform 0.3s ease;
 }
 
+/* Special styling for BizBuzz logo to center it */
+.project-card.horizontal .project-img[alt*="BizBuzz"] {
+    object-fit: contain;
+    object-position: center;
+    background-color: #1a1a1a;
+}
+
 .project-card.horizontal .project-image:hover .project-img {
     transform: scale(1.05);
 }
