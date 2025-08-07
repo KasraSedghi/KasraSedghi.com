@@ -135,6 +135,15 @@ body {
     margin-bottom: 2rem;
 }
 
+.hero-name {
+    display: block;
+    color: #FFD700;
+    font-size: 1.2em;
+    margin-bottom: 0.3em;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
 .hero-line {
     display: block;
     color: #FFD700;
