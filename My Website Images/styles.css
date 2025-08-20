@@ -1,0 +1,86 @@
+/* Add CSS styles for your web site here and use them in index.html. */
+
+a:link{
+    color:white;
+}
+
+a:visited{
+    color:white;
+}
+
+a:hover{
+    color:goldenrod;
+}
+
+a:active{
+    color:white;
+}
+
+.block:hover{
+    transform: scale(1.2);
+}
+
+.block {
+  display: inline-block; 
+  text-align: center;
+  width: fit-content;
+  transition: transform 0.3s ease;
+}
+
+/*This is for font appearence*/
+.I{
+    font-style: italic;
+}
+.BB{
+    font-style:bold;
+    text-decoration-line: underline;
+}
+
+.space{
+    display:block;
+    padding-bottom: 5px;
+}
+
+.aboutme{
+    display: flex;
+    justify-content: center;
+    justify-content: space-evenly;
+    border: 1px solid gold;
+}
+
+
+.link-row{
+    display: flex;
+    justify-content: center;
+    justify-content: space-evenly;
+}
+
+
+
+/*This is for the border of Projects*/
+.Projects{
+    border: 1px solid rgb(22, 200, 212);
+}
+/* This is for future when I need to wrap text and stuff around images */ 
+.projectlines{
+    display: flex;
+    justify-content: center;
+    justify-content: space-evenly;
+}
+
+
+/*This is for the border of Prof Highlights*/
+.ProfessionalHighlights{
+    border: 1px solid rgb(138, 24, 9);
+}
+/* This is for future when I need to wrap text and stuff around images */ 
+.proflines{
+    display: flex;
+    justify-content: center;
+    justify-content: space-evenly;
+}
+
+/*This is for the border of Contact*/
+.contact{
+    border: 1px solid gold;
+}
