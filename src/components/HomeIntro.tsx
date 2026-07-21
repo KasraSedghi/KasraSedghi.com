@@ -1,53 +1,51 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 /**
- * The home page opens on a penalty shootout that plays itself: five shots,
- * a diving keeper, a scoreboard tallying goals against saves, and then the
- * whole thing fades out to reveal the hero underneath. It is a one-time
- * cinematic, not a game, so it auto-plays, offers a Skip, runs only once per
- * browser session (sessionStorage), and is skipped entirely for
- * prefers-reduced-motion visitors. The hero always renders underneath in the
- * server HTML, so this never gates content or hurts SEO.
+ * The home page opens on a penalty shootout the visitor plays: click a
+ * corner of the goal to shoot, a keeper dives, and a scoreboard tallies
+ * goals against saves over five shots. Win and you get a celebration
+ * screen; either way an "Enter site" button (and an always-present Skip)
+ * fades the whole thing out to reveal the hero underneath.
+ *
+ * It runs only once per browser session (sessionStorage) and is skipped
+ * entirely for prefers-reduced-motion visitors. The hero always renders in
+ * the server HTML underneath, so this never gates content or hurts SEO; it
+ * is a client-only overlay.
  */
 
 type Corner = "left" | "center" | "right";
-type Phase = "ready" | "kick" | "goal" | "save" | "reset";
+type Phase = "aim" | "kick" | "goal" | "save";
 type ShotState = { index: number; ball: Corner; keeper: Corner; phase: Phase };
 
 const SESSION_KEY = "home-intro-seen";
 const CORNER_X: Record<Corner, string> = { left: "28%", center: "50%", right: "72%" };
 const CORNERS: Corner[] = ["left", "center", "right"];
 const TOTAL = 5;
-
-// Per-shot beats (ms): fly to goal, hold on the result, then reset to the spot.
-const KICK = 470;
-const HOLD = 470;
-const RESET = 210;
-const STEP = KICK + HOLD + RESET; // one full shot
+const KICK = 470; // ball flight
+const HOLD = 620; // linger on the result before the next shot
 
 export default function HomeIntro() {
   const [show, setShow] = useState(false);
   const [fading, setFading] = useState(false);
-  const [shot, setShot] = useState<ShotState | null>(null);
+  const [shot, setShot] = useState<ShotState>({ index: 0, ball: "center", keeper: "center", phase: "aim" });
   const [results, setResults] = useState<("goal" | "save")[]>([]);
   const [spin, setSpin] = useState(0);
-  const [finished, setFinished] = useState(false);
+  const [ended, setEnded] = useState(false);
   const timers = useRef<number[]>([]);
 
   const goals = results.filter((r) => r === "goal").length;
   const saves = results.length - goals;
+  const won = goals > saves;
 
   const clearTimers = () => {
     timers.current.forEach((t) => clearTimeout(t));
     timers.current = [];
   };
-
-  const dismiss = () => {
-    clearTimers();
-    setFading(true);
+  const at = (fn: () => void, delay: number) => {
+    timers.current.push(window.setTimeout(fn, delay));
   };
 
   useEffect(() => {
@@ -55,66 +53,63 @@ export default function HomeIntro() {
     if (reduce || sessionStorage.getItem(SESSION_KEY)) return;
     sessionStorage.setItem(SESSION_KEY, "1");
     setShow(true);
-
-    const at = (fn: () => void, delay: number) => {
-      timers.current.push(window.setTimeout(fn, delay));
-    };
-    const rand = () => CORNERS[Math.floor(Math.random() * CORNERS.length)];
-
-    // Predetermine a satisfying scoreline (3 or 4 goals of 5) so the intro
-    // reliably ends on a win rather than an unlucky 0/5.
-    const goalCount = 3 + Math.floor(Math.random() * 2);
-    const plan = Array.from({ length: TOTAL }, (_, i) => i < goalCount);
-    for (let i = plan.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [plan[i], plan[j]] = [plan[j], plan[i]];
-    }
-
-    let t = 380; // let the overlay fade in first
-    plan.forEach((isGoal, i) => {
-      const ball = rand();
-      let keeper = rand();
-      if (isGoal) {
-        while (keeper === ball) keeper = rand();
-      } else {
-        keeper = ball;
-      }
-
-      at(() => {
-        setShot({ index: i, ball, keeper, phase: "kick" });
-        setSpin((s) => s + 720);
-      }, t);
-      at(() => {
-        setShot((s) => (s ? { ...s, phase: isGoal ? "goal" : "save" } : s));
-        setResults((r) => [...r, isGoal ? "goal" : "save"]);
-      }, t + KICK);
-      at(() => {
-        setShot((s) => (s ? { ...s, phase: "reset" } : s));
-      }, t + KICK + HOLD);
-      t += STEP;
-    });
-
-    at(() => setFinished(true), t);
-    at(() => setFading(true), t + 950);
-
     return clearTimers;
   }, []);
 
+  // Fallback: if the visitor lingers on the win/result screen, drift into
+  // the site on their behalf so nothing gets stuck.
+  useEffect(() => {
+    if (!ended) return;
+    const t = window.setTimeout(() => setFading(true), 8000);
+    return () => clearTimeout(t);
+  }, [ended]);
+
+  function takeShot(corner: Corner) {
+    if (shot.phase !== "aim" || ended || fading) return;
+    const index = shot.index;
+
+    // Keeper saves ~32% of the time; on a goal it visibly dives to a
+    // different corner, on a save it guesses the same one.
+    const saved = Math.random() < 0.32;
+    let keeper: Corner = corner;
+    if (!saved) {
+      const others = CORNERS.filter((c) => c !== corner);
+      keeper = others[Math.floor(Math.random() * others.length)];
+    }
+    const isGoal = !saved;
+
+    setShot({ index, ball: corner, keeper, phase: "kick" });
+    setSpin((s) => s + 720);
+
+    at(() => {
+      setShot((s) => ({ ...s, phase: isGoal ? "goal" : "save" }));
+      setResults((r) => [...r, isGoal ? "goal" : "save"]);
+    }, KICK);
+
+    at(() => {
+      if (index >= TOTAL - 1) {
+        setEnded(true);
+      } else {
+        setShot({ index: index + 1, ball: "center", keeper: "center", phase: "aim" });
+      }
+    }, KICK + HOLD);
+  }
+
+  const dismiss = () => {
+    clearTimers();
+    setFading(true);
+  };
+
   if (!show) return null;
 
-  const phase = shot?.phase ?? "ready";
-  const ballCorner = shot?.ball ?? "center";
-  const keeperCorner = shot?.keeper ?? "center";
+  const phase = shot.phase;
   const keeperDiving = phase === "kick" || phase === "goal" || phase === "save";
-
   const ballTarget =
     phase === "kick" || phase === "goal"
-      ? { left: CORNER_X[ballCorner], top: "30%", scale: 0.72 }
+      ? { left: CORNER_X[shot.ball], top: "30%", scale: 0.72 }
       : phase === "save"
-        ? { left: CORNER_X[keeperCorner], top: "44%", scale: 0.78 }
+        ? { left: CORNER_X[shot.keeper], top: "44%", scale: 0.78 }
         : { left: "50%", top: "82%", scale: 1 };
-
-  const shotNumber = shot ? Math.min(shot.index + 1, TOTAL) : 0;
 
   return (
     <motion.div
@@ -124,103 +119,132 @@ export default function HomeIntro() {
       onAnimationComplete={() => {
         if (fading) setShow(false);
       }}
-      className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-ink px-6"
+      className="absolute inset-0 z-30 flex flex-col items-center justify-center overflow-hidden bg-ink px-6"
     >
-      <button
-        type="button"
-        onClick={dismiss}
-        className="absolute right-5 top-24 rounded-full border border-white/20 px-4 py-1.5 text-xs uppercase tracking-widest text-white/60 transition-colors hover:border-gold hover:text-gold"
-      >
-        Skip
-      </button>
-
-      {/* Scoreboard */}
-      <div className="mb-6 flex items-center gap-5 rounded-xl border border-gold/25 bg-ink-raised px-6 py-3">
-        <Team name="KASRA" score={goals} highlight />
-        <span className="text-white/30">vs</span>
-        <Team name="KEEPER" score={saves} />
-      </div>
-
-      {/* Pitch scene */}
-      <div className="relative aspect-[3/2] w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-ink-raised to-ink shadow-gold">
-        <GoalNet />
-
-        {/* Net ripple on a goal */}
-        <AnimatePresence>
-          {phase === "goal" && (
-            <motion.span
-              key={`ripple-${shot?.index}`}
-              className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold"
-              style={{ left: CORNER_X[ballCorner], top: "30%" }}
-              initial={{ scale: 0.3, opacity: 0.8 }}
-              animate={{ scale: 1.8, opacity: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Goalkeeper */}
-        <motion.div
-          className="absolute top-[30%] h-14 w-14 -translate-x-1/2"
-          animate={{
-            left: keeperDiving ? CORNER_X[keeperCorner] : "50%",
-            rotate: keeperDiving ? (keeperCorner === "left" ? -32 : keeperCorner === "right" ? 32 : 0) : 0,
-            y: keeperDiving && keeperCorner !== "center" ? 10 : 0,
-          }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
+      {!ended && (
+        <button
+          type="button"
+          onClick={dismiss}
+          className="absolute right-5 top-24 z-20 rounded-full border border-white/20 px-4 py-1.5 text-xs uppercase tracking-widest text-white/60 transition-colors hover:border-gold hover:text-gold"
         >
-          <Keeper reaching={keeperDiving} />
-        </motion.div>
+          Skip
+        </button>
+      )}
 
-        {/* Ball */}
-        <motion.div
-          className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2"
-          initial={{ left: "50%", top: "82%" }}
-          animate={{ ...ballTarget, rotate: spin }}
-          transition={{
-            left: { duration: 0.42, ease: "easeOut" },
-            top: { duration: 0.42, ease: phase === "kick" ? "easeOut" : "easeIn" },
-            scale: { duration: 0.42 },
-            rotate: { duration: 0.42, ease: "linear" },
-          }}
-        >
-          <Ball />
-        </motion.div>
+      {ended ? (
+        <EndScreen goals={goals} saves={saves} won={won} onEnter={dismiss} />
+      ) : (
+        <div className="relative z-10 flex flex-col items-center">
+          {/* Scoreboard */}
+          <div className="mb-6 flex items-center gap-5 rounded-xl border border-gold/25 bg-ink-raised px-6 py-3">
+            <Team name="KASRA" score={goals} highlight />
+            <span className="text-white/30">vs</span>
+            <Team name="KEEPER" score={saves} />
+          </div>
 
-        {/* Goal / save particles + badge */}
-        <AnimatePresence>
-          {(phase === "goal" || phase === "save") && (
-            <ResultBadge key={`badge-${shot?.index}`} kind={phase === "goal" ? "goal" : "save"} />
-          )}
-        </AnimatePresence>
+          {/* Pitch scene */}
+          <div className="relative aspect-[3/2] w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-ink-raised to-ink shadow-gold">
+            <GoalNet />
 
-        {/* Penalty spot */}
-        <span className="absolute left-1/2 top-[82%] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white/40" />
-      </div>
+            {/* Net ripple on a goal */}
+            <AnimatePresence>
+              {phase === "goal" && (
+                <motion.span
+                  key={`ripple-${shot.index}`}
+                  className="absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold"
+                  style={{ left: CORNER_X[shot.ball], top: "30%" }}
+                  initial={{ scale: 0.3, opacity: 0.8 }}
+                  animate={{ scale: 1.8, opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                />
+              )}
+            </AnimatePresence>
 
-      {/* Shot pips + status line */}
-      <div className="mt-5 flex items-center gap-2">
-        {Array.from({ length: TOTAL }).map((_, i) => {
-          const r = results[i];
-          return (
-            <span
-              key={i}
-              className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                r === "goal" ? "bg-gold" : r === "save" ? "bg-white/35" : "border border-white/25"
-              }`}
-            />
-          );
-        })}
-      </div>
+            {/* Goalkeeper */}
+            <motion.div
+              className="absolute top-[30%] h-14 w-14 -translate-x-1/2"
+              animate={{
+                left: keeperDiving ? CORNER_X[shot.keeper] : "50%",
+                rotate: keeperDiving ? (shot.keeper === "left" ? -32 : shot.keeper === "right" ? 32 : 0) : 0,
+                y: keeperDiving && shot.keeper !== "center" ? 10 : 0,
+              }}
+              transition={{ duration: 0.32, ease: "easeOut" }}
+            >
+              <Keeper reaching={keeperDiving} />
+            </motion.div>
 
-      <p className="mt-4 min-h-6 text-center text-sm text-white/60">
-        {finished
-          ? `Final: ${goals} to ${saves}. ${goals > saves ? "Shootout won." : goals === saves ? "Even shootout." : "Well fought."}`
-          : shot
-            ? `Shot ${shotNumber} of ${TOTAL}`
-            : "Warming up..."}
-      </p>
+            {/* Ball */}
+            <motion.div
+              className="absolute h-7 w-7 -translate-x-1/2 -translate-y-1/2"
+              initial={{ left: "50%", top: "82%" }}
+              animate={{ ...ballTarget, rotate: spin }}
+              transition={{
+                left: { duration: 0.42, ease: "easeOut" },
+                top: { duration: 0.42, ease: phase === "kick" ? "easeOut" : "easeIn" },
+                scale: { duration: 0.42 },
+                rotate: { duration: 0.42, ease: "linear" },
+              }}
+            >
+              <Ball />
+            </motion.div>
+
+            {/* Clickable aim zones (only while waiting for the shot) */}
+            {phase === "aim" && (
+              <div className="absolute inset-x-[7%] top-2 grid h-[56%] grid-cols-3 gap-1">
+                {CORNERS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => takeShot(c)}
+                    aria-label={`Shoot ${c}`}
+                    className="group flex items-center justify-center rounded-lg transition-colors hover:bg-gold/10"
+                  >
+                    <motion.span
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-gold/50 text-gold/70 transition-colors group-hover:border-gold group-hover:text-gold"
+                      animate={{ scale: [1, 1.16, 1] }}
+                      transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Reticle />
+                    </motion.span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Result badge + goal particles */}
+            <AnimatePresence>
+              {(phase === "goal" || phase === "save") && (
+                <ResultBadge key={`badge-${shot.index}`} kind={phase === "goal" ? "goal" : "save"} />
+              )}
+            </AnimatePresence>
+
+            {/* Penalty spot */}
+            <span className="absolute left-1/2 top-[82%] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white/40" />
+          </div>
+
+          {/* Shot pips + status line */}
+          <div className="mt-5 flex items-center gap-2">
+            {Array.from({ length: TOTAL }).map((_, i) => {
+              const r = results[i];
+              return (
+                <span
+                  key={i}
+                  className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                    r === "goal" ? "bg-gold" : r === "save" ? "bg-white/35" : "border border-white/25"
+                  }`}
+                />
+              );
+            })}
+          </div>
+
+          <p className="mt-4 min-h-6 text-center text-sm text-white/60">
+            {phase === "aim"
+              ? `Shot ${shot.index + 1} of ${TOTAL}. Click a corner to shoot.`
+              : `Shot ${Math.min(shot.index + 1, TOTAL)} of ${TOTAL}`}
+          </p>
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -232,6 +256,89 @@ function Team({ name, score, highlight }: { name: string; score: number; highlig
         {name}
       </p>
       <p className="text-2xl font-bold text-white tabular-nums">{score}</p>
+    </div>
+  );
+}
+
+function EndScreen({
+  goals,
+  saves,
+  won,
+  onEnter,
+}: {
+  goals: number;
+  saves: number;
+  won: boolean;
+  onEnter: () => void;
+}) {
+  const headline = won ? "Shootout won!" : goals === saves ? "Even shootout" : "Good game";
+  return (
+    <>
+      {won && <Confetti />}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="relative z-10 flex flex-col items-center text-center"
+      >
+        {won ? <Trophy /> : <BallBadge />}
+        <h2 className="mt-5 text-3xl font-extrabold text-gold sm:text-4xl">{headline}</h2>
+        <p className="mt-2 text-white/70">
+          You scored {goals} of {TOTAL}
+          {won ? " and beat the keeper." : goals === saves ? " and drew with the keeper." : "."}
+        </p>
+        <div className="mt-4 flex items-center gap-2">
+          {Array.from({ length: TOTAL }).map((_, i) => (
+            <span
+              key={i}
+              className={`h-2.5 w-2.5 rounded-full ${i < goals ? "bg-gold" : "bg-white/30"}`}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={onEnter}
+          className="mt-8 rounded-full bg-gold px-8 py-3 font-semibold text-ink transition-transform hover:-translate-y-0.5 hover:shadow-gold-lg"
+        >
+          Enter site
+        </button>
+      </motion.div>
+    </>
+  );
+}
+
+function Confetti() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 70 }, () => ({
+        left: Math.random() * 100,
+        delay: Math.random() * 0.5,
+        duration: 2.2 + Math.random() * 1.6,
+        drift: (Math.random() - 0.5) * 90,
+        spin: 180 + Math.random() * 360,
+        gold: Math.random() > 0.4,
+        size: 5 + Math.random() * 5,
+      })),
+    [],
+  );
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+      {pieces.map((p, i) => (
+        <motion.span
+          key={i}
+          className="absolute top-0 rounded-[1px]"
+          style={{
+            left: `${p.left}%`,
+            width: p.size,
+            height: p.size * 0.5,
+            backgroundColor: p.gold ? "#FFD700" : "#f5f5f5",
+          }}
+          initial={{ y: "-10vh", x: 0, opacity: 0, rotate: 0 }}
+          animate={{ y: "105vh", x: p.drift, opacity: [0, 1, 1, 0], rotate: p.spin }}
+          transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "linear" }}
+        />
+      ))}
     </div>
   );
 }
@@ -261,7 +368,6 @@ function GoalNet() {
 function Keeper({ reaching }: { reaching: boolean }) {
   return (
     <svg viewBox="0 0 56 56" className="h-14 w-14 drop-shadow-[0_6px_12px_rgba(0,0,0,0.5)]">
-      {/* arms: out when reaching, down when set */}
       {reaching ? (
         <path d="M28 30 L8 20 M28 30 L48 20" stroke="#FFD700" strokeWidth="4" strokeLinecap="round" fill="none" />
       ) : (
@@ -285,6 +391,34 @@ function Ball() {
         strokeWidth="1"
         strokeLinecap="round"
       />
+    </svg>
+  );
+}
+
+function Reticle() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="12" r="7" />
+      <path d="M12 2v4M12 18v4M2 12h4M18 12h4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Trophy() {
+  return (
+    <svg viewBox="0 0 48 48" className="h-16 w-16 text-gold drop-shadow-[0_6px_16px_rgba(255,215,0,0.45)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 6h20v8a10 10 0 0 1-20 0z" />
+      <path d="M14 9H9a4 4 0 0 0 4 6M34 9h5a4 4 0 0 1-4 6" />
+      <path d="M24 24v7M18 39h12M20 39c0-4 8-4 8 0" />
+    </svg>
+  );
+}
+
+function BallBadge() {
+  return (
+    <svg viewBox="0 0 48 48" className="h-16 w-16 drop-shadow-[0_6px_16px_rgba(0,0,0,0.5)]">
+      <circle cx="24" cy="24" r="20" fill="#f5f5f5" stroke="#111" strokeWidth="2" />
+      <path d="M24 12l7 5-2.7 8.4h-8.6L17 17z" fill="#111" />
     </svg>
   );
 }
