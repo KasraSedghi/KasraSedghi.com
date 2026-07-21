@@ -35,7 +35,7 @@ export const projects: Project[] = [
     id: "shadowvest",
     name: "ShadowVest Portfolio Tracker",
     repoName: "Stocks101",
-    period: "January 2024 to February 2024",
+    period: "June 2026",
     category: "Technical",
     description:
       "A personal stock tracker that answers questions about your portfolio in plain English instead of making you dig through spreadsheets or menus.",
