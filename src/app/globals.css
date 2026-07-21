@@ -18,6 +18,37 @@
   }
 }
 
+/* Top-of-page chase strip (SoccerChaseStrip): a kid kicking a ball, chased
+   by a dog and cat, looping left to right forever above the navbar. Pure
+   CSS keyframes, no Framer Motion, since this runs on every page for the
+   life of the tab and should stay compositor-only (transform only). */
+@keyframes chase-run {
+  0% {
+    transform: translateX(-20vw);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+@keyframes chase-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+.chase-runner {
+  animation: chase-run 9s linear infinite;
+}
+
+.chase-bob {
+  animation: chase-bob 0.32s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -26,5 +57,18 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* The generic override above freezes .chase-runner on its LAST keyframe,
+     which is off screen to the right (a blank strip). Pin it to a centered,
+     still frame instead so reduced-motion visitors still see the little
+     scene, just not moving. */
+  .chase-runner {
+    animation: none !important;
+    transform: translateX(42vw);
+  }
+
+  .chase-bob {
+    animation: none !important;
   }
 }

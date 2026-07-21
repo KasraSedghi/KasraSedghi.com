@@ -22,7 +22,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br from-ink to-ink-raised pt-24">
+    <section className="relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br from-ink to-ink-raised pt-32">
       <PitchBackground />
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2">
         <motion.div

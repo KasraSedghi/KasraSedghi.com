@@ -34,7 +34,7 @@ const FAQS = [
 
 export default function ContactPage() {
   return (
-    <div className="pt-28">
+    <div className="pt-36">
       <section className="mx-auto max-w-4xl px-6 pb-16 text-center">
         <h1 className="text-4xl font-extrabold sm:text-5xl">Get In Touch</h1>
         <p className="mt-3 text-white/70">Ready to collaborate? Let&rsquo;s discuss your project.</p>

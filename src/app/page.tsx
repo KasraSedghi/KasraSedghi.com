@@ -13,7 +13,7 @@ const QUICK_LINKS = [
 export default function HomePage() {
   return (
     <>
-      <section className="mx-auto max-w-6xl px-6 pb-16 pt-28">
+      <section className="mx-auto max-w-6xl px-6 pb-16 pt-36">
         <h2 className="mb-2 text-center text-3xl font-bold">Penalty Shootout</h2>
         <p className="mx-auto mb-10 max-w-md text-center text-white/60">
           Best of five. Pick a corner, beat the keeper.
