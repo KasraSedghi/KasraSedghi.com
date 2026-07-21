@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Hero from "@/components/Hero";
-import PenaltyShootout from "@/components/PenaltyShootout";
-import PitchDivider from "@/components/PitchDivider";
+import HomeIntro from "@/components/HomeIntro";
 import { site } from "@/data/site";
 
 const QUICK_LINKS = [
@@ -13,16 +12,12 @@ const QUICK_LINKS = [
 export default function HomePage() {
   return (
     <>
-      <section className="mx-auto max-w-6xl px-6 pb-16 pt-36">
-        <h2 className="mb-2 text-center text-3xl font-bold">Penalty Shootout</h2>
-        <p className="mx-auto mb-10 max-w-md text-center text-white/60">
-          Best of five. Pick a corner, beat the keeper.
-        </p>
-        <PenaltyShootout />
-        <PitchDivider />
-      </section>
-
-      <Hero />
+      {/* The hero always renders; HomeIntro plays the shootout over it once
+          per session, then fades out to reveal it. */}
+      <div className="relative">
+        <Hero />
+        <HomeIntro />
+      </div>
 
       <section className="mx-auto max-w-6xl px-6 py-24">
         <h2 className="mb-10 text-center text-3xl font-bold">What I Do</h2>
