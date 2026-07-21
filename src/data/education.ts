@@ -17,7 +17,7 @@ export const education: EducationEntry[] = [
     period: "Expected May 2029",
     program: "Interdisciplinary Business Honors College",
     description:
-      "Double majoring in Computer Science and Finance with a Data Science minor, through the Interdisciplinary Business Honors College.",
+      "Double majoring in Computer Science and Finance with a Data Science minor, through the Interdisciplinary Business Honors College and the QUEST Honors Program, which pairs business, engineering, and computer science students on real projects for corporate partners.",
     icon: "university",
   },
 ];
@@ -30,15 +30,26 @@ export type ActivityEntry = {
   period: string;
   href?: string;
   description: string;
-  icon: "growth" | "ascend" | "heart-code" | "rocket";
+  icon: "growth" | "ascend" | "heart-code" | "rocket" | "star";
 };
 
 export const activities: ActivityEntry[] = [
+  {
+    id: "quest",
+    name: "QUEST Honors Program",
+    role: "Honors Student",
+    period: "Expected 2027 to 2029",
+    href: "https://www.rhsmith.umd.edu/quest",
+    description:
+      "A three year honors program that puts business, engineering, and computer science students on the same team to solve real problems for corporate partners. Runs alongside the Interdisciplinary Business Honors College as a second, project heavy track through school.",
+    icon: "star",
+  },
   {
     id: "dingman-vc",
     name: "Dingman Venture Capitalist Group",
     role: "Junior Analyst",
     period: "October 2025 to Present",
+    href: "https://www.rhsmith.umd.edu/centers-initiatives/dingman-lamone-center",
     description:
       "Helping design and run a $140,000 fund that invests in student startups at Maryland, from finding companies to deciding who gets funded, including how applications get scored.",
     icon: "growth",
@@ -48,6 +59,7 @@ export const activities: ActivityEntry[] = [
     name: "Management Leadership for Tomorrow",
     role: "Ascend Program Scholar",
     period: "August 2025 to Present",
+    href: "https://mlt.org/ascend/",
     description:
       "An eleven month program for first generation college students that pairs me with a coach and a network of professionals to help me grow.",
     icon: "ascend",
@@ -67,6 +79,7 @@ export const activities: ActivityEntry[] = [
     name: "Startup Shell",
     role: "Member",
     period: "October 2025 to Present",
+    href: "https://startupshell.org/",
     description:
       "A student run startup incubator where I go to idea sessions and help other students shape their own companies.",
     icon: "rocket",
