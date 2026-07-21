@@ -2,7 +2,7 @@
 // components should import from here, never hardcode an email or handle.
 export const site = {
   name: "Kasra Sedghi",
-  role: "Software Engineer & Investor-in-Training",
+  role: "Software Engineer & Finance Student",
   tagline: "Building tech solutions across code, capital, and campus.",
   location: "College Park, MD",
   email: "sedghik07@gmail.com",

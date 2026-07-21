@@ -21,7 +21,7 @@ export const certifications = [
   "AWS Cloud Practitioner",
   "CodePath Technical Interview Prep",
   "CodePath Web101: Web Development",
-  "Anthropic: Claude101 & AI Fluency — Framework & Foundations",
+  "Anthropic: Claude101 & AI Fluency: Framework & Foundations",
 ] as const;
 
 export const awards = [

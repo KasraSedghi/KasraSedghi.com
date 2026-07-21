@@ -9,23 +9,23 @@ export type ExperienceEntry = {
   achievements: string[];
 };
 
-// Reconciled from Kasra's resume revisions (kept the most specific/current
-// bullet where two versions overlapped — e.g. Amazon's bullets below describe
-// the actual Alexa Shopping work rather than the earlier placeholder text).
+// Written at a high level in plain language on purpose. A portfolio isn't
+// a resume: it should be quick to read and easy to understand, not a copy
+// of dense resume bullets. See CLAUDE.md for the style rule.
 export const experience: ExperienceEntry[] = [
   {
     id: "amazon",
     title: "Software Development Engineer Intern",
     org: "Amazon",
     location: "Seattle, WA",
-    period: "June 2026 – August 2026",
+    period: "June 2026 to August 2026",
     icon: "amazon",
     summary:
-      "Selected for Amazon's competitive 12-week SDE internship, building a cross-platform feature for Alexa's generative-AI shopping assistant.",
+      "Spending the summer on Amazon's Alexa Shopping team, building a feature that lets people share what they find with an AI shopping assistant.",
     achievements: [
-      "Engineered a full-stack, cross-platform Share feature using React Native and Java for Alexa for Shopping, scaled to an active audience exceeding 300 million users.",
-      "Optimized latency and data persistence by caching deep-linked search contexts in Amazon DynamoDB, enabling instant context loading and real-time follow-up suggestion pills.",
-      "Analyzed live customer interaction telemetry to evaluate post-share recipient behavior, using data-driven insight to validate product adoption and incremental sales conversions.",
+      "Built a share feature for Alexa's AI shopping assistant, used across an audience of hundreds of millions of people.",
+      "Made the experience feel instant by caching what people were searching for, so shared links open right where the other person left off.",
+      "Looked at how people actually used the feature after it shipped, to help the team understand what was working and what wasn't.",
     ],
   },
   {
@@ -33,15 +33,14 @@ export const experience: ExperienceEntry[] = [
     title: "AI Engineer Intern",
     org: "Maryland Tech Ventures",
     location: "College Park, MD",
-    period: "January 2026 – Present",
+    period: "January 2026 to Present",
     icon: "sparkles",
     summary:
-      "Building an AI-powered intelligence layer for the NSF I-Corps curriculum used by UMD's venture accelerator.",
+      "Building AI tools for the University of Maryland's startup accelerator, helping mentors get through mountains of pitch decks and interview notes faster.",
     achievements: [
-      "Architected an AI-powered intelligence layer automating ingestion and analysis of 1,500+ presentation slides, hypothesis logs, and interview frameworks previously reviewed manually.",
-      "Engineered a Retrieval-Augmented Generation pipeline (LangChain + GPT-4) to synthesize unstructured data — raw customer discovery transcripts and spreadsheets — into evidence-based insight.",
-      "Deployed automated LLM workflows that score interview quality and hypothesis alignment, standardizing the feedback loop across hundreds of customer discovery sessions.",
-      "Designed a scoring system integrating program data, improving hypothesis-analysis throughput by 70%.",
+      "Built a system that automatically reads through thousands of slides, interview notes, and research logs, so mentors don't have to review everything by hand.",
+      "Used AI language models to pull useful insight out of messy customer interviews and spreadsheets.",
+      "Created a way to automatically score how strong a startup's customer research is, cutting manual review time way down.",
     ],
   },
   {
@@ -49,14 +48,14 @@ export const experience: ExperienceEntry[] = [
     title: "IT Support Technician",
     org: "Terrapin Tech, University of Maryland",
     location: "College Park, MD",
-    period: "September 2025 – Present",
+    period: "September 2025 to Present",
     icon: "university",
     summary:
-      "Front-line technical support for UMD students and faculty as part of a 5-person team.",
+      "Help students and staff across campus fix everyday tech problems, from Wi-Fi and login issues to broken laptops.",
     achievements: [
-      "Resolve 60+ student/faculty issues per week across Wi-Fi, Duo MFA, OS, and hardware.",
-      "Assess and close tickets using diagnostics, ticketing workflows, and security protocols; document fixes to accelerate repeat-issue handling.",
-      "Restore network stability by removing conflicting VPN/AV software, updating firmware/drivers, and validating BIOS/Windows updates.",
+      "Solve dozens of tech support tickets every week, covering Wi-Fi, two factor login, and hardware issues.",
+      "Work with a small team to track and close tickets, and write down fixes so the next person can solve similar problems faster.",
+      "Untangle common software and hardware conflicts that knock people off the university network.",
     ],
   },
   {
@@ -64,15 +63,15 @@ export const experience: ExperienceEntry[] = [
     title: "Project Manager & SDET Intern",
     org: "BizBuzz",
     location: "Annapolis, MD",
-    period: "October 2024 – August 2025",
+    period: "October 2024 to August 2025",
     icon: "bug",
     summary:
-      "QA and project management for a social-media/digital-marketing startup's app.",
+      "Managed testing and training for a small marketing app startup, making sure both the software and the people using it worked well.",
     achievements: [
-      "Led training for a team of 3 Virtual Assistants, improving task automation for app features and report generation.",
-      "Created 10+ step-by-step visual guides and FAQs supporting 1,000+ app users.",
-      "Ran regression and exploratory tests on core algorithms; streamlined bug intake and prioritization, reducing reported defects by 25%.",
-      "Delivered weekly QA dashboards (bug severity, code-quality KPIs) and processed 25+ tickets/week to shorten engineering feedback cycles.",
+      "Trained a small team of virtual assistants to use the app more effectively.",
+      "Wrote simple guides that helped over a thousand users troubleshoot the app on their own.",
+      "Ran regular tests and organized incoming bug reports, cutting the number of reported problems by a quarter.",
+      "Reported weekly on bug trends and code quality so the engineering team could prioritize better.",
     ],
   },
   {
@@ -80,14 +79,14 @@ export const experience: ExperienceEntry[] = [
     title: "Business Operations Manager",
     org: "The Red Bean",
     location: "Annapolis, MD",
-    period: "January 2023 – August 2025",
+    period: "January 2023 to August 2025",
     icon: "coffee",
     summary:
-      "End-to-end operations for a local café — inventory, vendors, staffing, financials, and marketing.",
+      "Ran the day to day business side of a local coffee shop, from ordering supplies to marketing.",
     achievements: [
-      "Grew revenue 30% year-over-year by trimming costs and launching new product lines based on sales-mix and margin analysis.",
-      "Managed end-to-end operations — inventory, vendor terms, staff schedules, financial reporting — to improve cash flow, lifting profitability 15% through better inventory turnover.",
-      "Built a social presence reaching 3,000+ followers; produced targeted video creative, including a Marriott-lobby placement to drive foot traffic and brand awareness.",
+      "Grew revenue thirty percent in a year by cutting costs and adding new menu items that actually sold.",
+      "Handled inventory, vendors, staffing, and the books, which improved cash flow and profitability.",
+      "Built the shop's social media following past three thousand followers, including a video ad that played in a hotel lobby.",
     ],
   },
 ];

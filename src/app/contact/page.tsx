@@ -16,19 +16,19 @@ const CONTACT_CARDS = [
 const FAQS = [
   {
     q: "What types of projects do you work on?",
-    a: "Software development, data analysis, automation, and business/finance modeling — web applications, RAG pipelines, and financial analytics.",
+    a: "Software development, data analysis, automation, and business or finance modeling, including web applications, AI pipelines, and financial analytics.",
   },
   {
     q: "Do you work remotely?",
-    a: "Yes — comfortable working remotely and collaborating with distributed teams, and open to hybrid arrangements.",
+    a: "Yes, I'm comfortable working remotely and collaborating with distributed teams, and open to hybrid arrangements.",
   },
   {
     q: "What's your preferred method of communication?",
-    a: "Email for initial contact; flexible with calls and messaging platforms for ongoing projects.",
+    a: "Email for initial contact, and flexible with calls and messaging platforms for ongoing projects.",
   },
   {
-    q: "Are you available for long-term projects?",
-    a: "Yes, alongside academic responsibilities — happy to discuss scope and timeline.",
+    q: "Are you available for long term projects?",
+    a: "Yes, alongside academic responsibilities. Happy to discuss scope and timeline.",
   },
 ];
 

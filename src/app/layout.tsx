@@ -16,7 +16,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(site.domain),
   title: {
-    default: `${site.name} — Software Engineer & Project Manager | University of Maryland`,
+    default: `${site.name} | Software Engineer & Project Manager | University of Maryland`,
     template: `%s | ${site.name}`,
   },
   description:
@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     type: "website",
     url: site.domain,
     siteName: `${site.name} Portfolio`,
-    title: `${site.name} — Software Engineer & Project Manager`,
+    title: `${site.name} | Software Engineer & Project Manager`,
     description:
       "CS + Finance student at the University of Maryland building software, analyzing markets, and shipping projects.",
     images: [{ url: "/KSphoto.png" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — Software Engineer & Project Manager`,
+    title: `${site.name} | Software Engineer & Project Manager`,
     description:
       "CS + Finance student at the University of Maryland building software, analyzing markets, and shipping projects.",
     images: ["/KSphoto.png"],

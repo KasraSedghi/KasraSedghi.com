@@ -65,10 +65,10 @@ export default function ContactForm() {
       </button>
 
       {status === "success" && (
-        <p className="text-sm text-emerald-400">Thanks — I&rsquo;ll get back to you within 24 hours.</p>
+        <p className="text-sm text-emerald-400">Thanks. I&rsquo;ll get back to you within 24 hours.</p>
       )}
       {status === "error" && (
-        <p className="text-sm text-red-400">Something went wrong — check your inputs, or email me directly.</p>
+        <p className="text-sm text-red-400">Something went wrong. Check your inputs, or email me directly.</p>
       )}
     </form>
   );
