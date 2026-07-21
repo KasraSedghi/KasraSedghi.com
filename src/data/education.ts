@@ -41,7 +41,7 @@ export const activities: ActivityEntry[] = [
     period: "Expected 2027 to 2029",
     href: "https://www.rhsmith.umd.edu/quest",
     description:
-      "A three year honors program that puts business, engineering, and computer science students on the same team to solve real problems for corporate partners. Runs alongside the Interdisciplinary Business Honors College as a second, project heavy track through school.",
+      "A selective honors program where small teams of business, engineering, and computer science students take on real consulting projects for companies, studying how a process works and handing back recommendations the company can act on.",
     icon: "star",
   },
   {
