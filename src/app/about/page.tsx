@@ -40,6 +40,12 @@ export default function AboutPage() {
             splitting my time between shipping software, evaluating startups as a venture analyst,
             and learning what makes both durable.
           </p>
+          <p>
+            I&rsquo;m also part of the QUEST Honors Program, a three year track that runs alongside
+            IBH and puts business, engineering, and computer science students on the same team to
+            solve real problems for corporate partners. Between the two, most of my coursework
+            happens in a group, on something a real company actually needed built.
+          </p>
         </div>
       </section>
 

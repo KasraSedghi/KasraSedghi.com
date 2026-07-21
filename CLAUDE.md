@@ -57,6 +57,7 @@ Keep all of this subtle and performant (respect `prefers-reduced-motion` through
 
 - `.claude/agents/design-lead.md`: visual and UX review persona. Use for design system consistency passes, palette/spacing/motion critique, before shipping a visual change.
 - `.claude/agents/frontend-engineer.md`: implementation persona for component work matching the conventions above.
+- `.claude/agents/soccer-animation-designer.md`: creative persona scoped specifically to the soccer/pitch motif (the hero ball, timeline ball, and anything new in that vein). Use when Kasra asks for a new soccer-themed animation or interaction, so each one stays distinct rather than a variation on the last.
 
 ## Skills
 

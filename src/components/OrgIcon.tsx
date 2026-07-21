@@ -10,7 +10,8 @@ export type OrgIconKey =
   | "growth"
   | "ascend"
   | "heart-code"
-  | "rocket";
+  | "rocket"
+  | "star";
 
 const commonProps = {
   viewBox: "0 0 24 24",
@@ -110,6 +111,14 @@ function Rocket() {
   );
 }
 
+function Star() {
+  return (
+    <svg {...commonProps}>
+      <path d="M12 3.5l2.4 5 5.4.6-4 3.8 1 5.4-4.8-2.6-4.8 2.6 1-5.4-4-3.8 5.4-.6z" />
+    </svg>
+  );
+}
+
 const ICONS: Record<OrgIconKey, () => React.JSX.Element> = {
   amazon: Amazon,
   university: University,
@@ -120,6 +129,7 @@ const ICONS: Record<OrgIconKey, () => React.JSX.Element> = {
   ascend: Ascend,
   "heart-code": HeartCode,
   rocket: Rocket,
+  star: Star,
 };
 
 export default function OrgIcon({
