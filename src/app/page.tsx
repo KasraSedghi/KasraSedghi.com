@@ -13,16 +13,16 @@ const QUICK_LINKS = [
 export default function HomePage() {
   return (
     <>
-      <Hero />
-
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <PitchDivider />
-        <h2 className="mb-2 mt-6 text-center text-3xl font-bold">Penalty Shootout</h2>
+      <section className="mx-auto max-w-6xl px-6 pb-16 pt-28">
+        <h2 className="mb-2 text-center text-3xl font-bold">Penalty Shootout</h2>
         <p className="mx-auto mb-10 max-w-md text-center text-white/60">
           Best of five. Pick a corner, beat the keeper.
         </p>
         <PenaltyShootout />
+        <PitchDivider />
       </section>
+
+      <Hero />
 
       <section className="mx-auto max-w-6xl px-6 py-24">
         <h2 className="mb-10 text-center text-3xl font-bold">What I Do</h2>

@@ -52,7 +52,7 @@ export default function ContactForm() {
           name="message"
           rows={6}
           required
-          className="w-full rounded-lg border border-white/10 bg-ink px-4 py-3 text-white outline-none transition-colors focus:border-gold"
+          className="w-full rounded-lg border-2 border-white/25 bg-ink px-4 py-3 text-white outline-none transition-colors focus:border-gold"
         />
       </div>
 
@@ -95,7 +95,7 @@ function Field({
         name={name}
         type={type}
         required={required}
-        className="w-full rounded-lg border border-white/10 bg-ink px-4 py-3 text-white outline-none transition-colors focus:border-gold"
+        className="w-full rounded-lg border-2 border-white/25 bg-ink px-4 py-3 text-white outline-none transition-colors focus:border-gold"
       />
     </div>
   );
