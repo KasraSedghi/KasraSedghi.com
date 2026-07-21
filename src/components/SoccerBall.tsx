@@ -3,14 +3,22 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
+type Props = {
+  size?: number;
+  /** Sizing/positioning classes for the drag arena the ball roams in. */
+  containerClassName?: string;
+  /** Where the ball starts within its arena. */
+  start?: "center" | "corner";
+};
+
 /**
- * A draggable, physics-y soccer ball. Flick it around the hero — it rolls
- * (rotation tracks distance traveled, like a ball on the ground) and
- * snaps back into its container with a spring. Pure personality touch;
- * disabled visually for prefers-reduced-motion via the drag being optional,
- * not required, to read the hero.
+ * A draggable, physics-y soccer ball. Flick it around and it rolls
+ * (rotation tracks distance traveled, like a ball on the ground), bounces
+ * off the edges of its arena, and idles with a gentle bounce when left
+ * alone. Pure personality touch; MotionProvider makes all of this
+ * stand down for prefers-reduced-motion users.
  */
-export default function SoccerBall({ size = 96 }: { size?: number }) {
+export default function SoccerBall({ size = 96, containerClassName, start = "center" }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rotate = useMotionValue(0);
   const smoothRotate = useSpring(rotate, { stiffness: 120, damping: 20 });
@@ -23,10 +31,15 @@ export default function SoccerBall({ size = 96 }: { size?: number }) {
     rotate.set(rotate.get() + deltaDegrees + info.delta.y * 0.5);
   };
 
+  const startPosition =
+    start === "corner"
+      ? "bottom-4 right-4"
+      : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2";
+
   return (
     <div
       ref={containerRef}
-      className="relative h-[260px] w-full max-w-[260px] select-none"
+      className={containerClassName ?? "relative h-[260px] w-full max-w-[260px] select-none"}
       aria-hidden="true"
     >
       <motion.div
@@ -37,10 +50,15 @@ export default function SoccerBall({ size = 96 }: { size?: number }) {
         whileDrag={{ scale: 1.08, cursor: "grabbing" }}
         onDrag={handleDrag as unknown as (e: MouseEvent | TouchEvent | PointerEvent, info: import("framer-motion").PanInfo) => void}
         style={{ rotate: smoothRotate, width: size, height: size }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-grab touch-none"
+        className={`absolute ${startPosition} cursor-grab touch-none`}
         title="Flick me"
       >
-        <SoccerBallSvg size={size} />
+        <motion.div
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <SoccerBallSvg size={size} />
+        </motion.div>
       </motion.div>
     </div>
   );

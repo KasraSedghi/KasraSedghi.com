@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BallList from "@/components/BallList";
 import { projects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Kasra Sedghi's technical and business analytics projects — full-stack apps, AI pipelines, and financial models.",
+    "Kasra Sedghi's technical and business analytics projects, including full stack apps, AI pipelines, and financial models.",
 };
 
 export default function ProjectsPage() {
@@ -56,11 +57,7 @@ function ProjectGroup({ title, items }: { title: string; items: typeof projects 
             <p className="mb-1 text-xs text-white/60">{p.period}</p>
             <p className="mb-4 text-sm text-white/70">{p.description}</p>
 
-            <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-white/70">
-              {p.highlights.map((h) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
+            <BallList items={p.highlights} className="mb-4" />
 
             <div className="mb-4 mt-auto flex flex-wrap gap-2">
               {p.tech.map((t) => (

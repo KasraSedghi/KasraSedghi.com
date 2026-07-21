@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SoccerBall from "@/components/SoccerBall";
+import PitchBackground from "@/components/PitchBackground";
 
 const TYPED_TEXT = "Software Engineer & Finance Student";
 
@@ -21,8 +23,9 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="flex min-h-screen items-center bg-gradient-to-br from-ink to-ink-raised pt-24">
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2">
+    <section className="relative flex min-h-screen items-center overflow-hidden bg-gradient-to-br from-ink to-ink-raised pt-24">
+      <PitchBackground />
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -38,8 +41,8 @@ export default function Hero() {
             <span className="animate-pulse text-gold">|</span>
           </p>
           <p className="mt-4 max-w-md text-white/70">
-            Double-majoring in Computer Science and Finance at the University of
-            Maryland — shipping full-stack products, running RAG pipelines, and
+            Double majoring in Computer Science and Finance at the University of
+            Maryland, shipping full stack products, running AI pipelines, and
             learning the venture side of tech.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
@@ -72,10 +75,24 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="flex flex-col items-center gap-3"
+          className="mx-auto w-full max-w-md"
         >
-          <SoccerBall />
-          <p className="text-xs uppercase tracking-widest text-white/60">Flick the ball</p>
+          <div className="relative h-[380px] w-full">
+            <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-2 border-gold/40 shadow-gold-lg sm:h-72 sm:w-72">
+              <Image
+                src="/KSphoto.png"
+                alt="Kasra Sedghi"
+                width={320}
+                height={320}
+                priority
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <SoccerBall containerClassName="absolute inset-0" start="corner" />
+          </div>
+          <p className="mt-2 text-center text-xs uppercase tracking-widest text-white/50">
+            Flick the ball
+          </p>
         </motion.div>
       </div>
     </section>
