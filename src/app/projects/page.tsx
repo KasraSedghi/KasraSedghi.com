@@ -14,7 +14,7 @@ export default function ProjectsPage() {
   const business = projects.filter((p) => p.category === "Business & Analytics");
 
   return (
-    <div className="pt-28">
+    <div className="pt-36">
       <section className="mx-auto max-w-4xl px-6 pb-16 text-center">
         <h1 className="text-4xl font-extrabold sm:text-5xl">My Projects</h1>
         <p className="mt-3 text-white/70">Showcasing shipped software and analytical work</p>

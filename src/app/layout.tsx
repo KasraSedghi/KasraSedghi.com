@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
+import SoccerChaseStrip from "@/components/SoccerChaseStrip";
 import { site } from "@/data/site";
 import "./globals.css";
 
@@ -81,7 +82,10 @@ export default function RootLayout({
           }}
         />
         <MotionProvider>
-          <Navbar />
+          <div className="fixed inset-x-0 top-0 z-50 flex flex-col">
+            <SoccerChaseStrip />
+            <Navbar />
+          </div>
           <main className="flex-1">{children}</main>
           <Footer />
         </MotionProvider>
