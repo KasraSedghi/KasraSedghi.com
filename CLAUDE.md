@@ -45,13 +45,16 @@ Conventions (carried over from `.cursor/rules/myRules.mdc`, still apply): functi
 ## The interactive theme
 
 Kasra asked for a soccer ball motif and a livelier, more visual site overall:
-- **Hero**: a draggable, flickable SVG soccer ball (Framer Motion `drag` plus inertia and an idle bounce) next to Kasra's photo, as a tactile easter egg. Not a gimmick: a small demonstration of animation and physics skill for anyone reviewing the site as a portfolio.
+- **Top-of-page chase strip** (`src/components/SoccerChaseStrip.tsx`): a thin strip above the navbar on every page, a kid kicking a ball chased by a dog and a cat, jogging left to right forever. Pure CSS keyframes in `globals.css` (`chase-run`, `gallop`, `run-a`/`run-b` two-frame legs, `ball-spin`), no JS. The cross-screen run is deliberately slow (18s) so it's easy to follow.
+- **Home intro shootout** (`src/components/HomeIntro.tsx`): the home page opens on a penalty shootout that plays itself (five shots, a diving keeper, a scoreboard) and then fades out to reveal the hero underneath. Auto-plays, offers a Skip button, runs only once per browser session (`sessionStorage`), and is skipped entirely for reduced-motion visitors. The hero always renders in the server HTML underneath, so the intro never gates content or hurts SEO. Framer Motion drives the ball/keeper; a timer chain sequences the five shots.
 - **Experience timeline** (About page): scroll linked. A ball rolls down the timeline line as the visitor scrolls, position driven by `useScroll`/`useTransform`, not by discrete steps, and a small celebration fires once the visitor reaches the bottom.
 - **Org badges**: each employer/organization gets a small hand drawn monoline icon (`src/components/OrgIcon.tsx`) rather than a real logo image, to avoid trademark/licensing questions on a personal site while keeping every mark in the same style.
 - **PitchBackground** and **PitchDivider**: a faint mowed grass stripe pattern and a center circle divider echo the soccer motif without competing with the content.
 - **BallList**: bullet points across the site use a tiny ball instead of a plain dot.
 
-Keep all of this subtle and performant (respect `prefers-reduced-motion` through `MotionProvider`); this is a recruiting facing professional site, not a game.
+The earlier draggable hero ball and the standalone interactive penalty-shootout section were both removed at Kasra's request (the shootout became the auto-playing intro above). Don't reintroduce them.
+
+Keep all of this subtle and performant (respect `prefers-reduced-motion` through `MotionProvider`, plus explicit checks for anything animated outside Framer Motion like the chase strip's CSS keyframes and the intro's `matchMedia` gate); this is a recruiting facing professional site, not a game.
 
 ## Subagents
 
