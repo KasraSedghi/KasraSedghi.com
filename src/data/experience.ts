@@ -29,6 +29,21 @@ export const experience: ExperienceEntry[] = [
     ],
   },
   {
+    id: "dingman",
+    title: "E-Fund Lead",
+    org: "Dingman Venture Capitalist Group",
+    location: "College Park, MD",
+    period: "February 2026 to Present",
+    icon: "university",
+    summary:
+      "Helping founders access early capital while giving student investors hands-on experience finding and supporting promising startups.",
+    achievements: [
+      "Guide a student investment team as we find founders, understand their businesses, and decide where our fund can make a difference.",
+      "Help analysts and associates explore startups in sectors they care about and build confidence in their investment judgment.",
+      "Make the path from a founder's first introduction to an investment review clearer, with a shared approach to learning about each business.",
+    ],
+  },
+  {
     id: "mtv",
     title: "AI Engineer Intern",
     org: "Maryland Tech Ventures",
